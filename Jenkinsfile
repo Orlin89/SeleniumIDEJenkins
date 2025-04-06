@@ -30,19 +30,15 @@ pipeline{
 		
 		stage('Run tests'){
 		    steps{
-			    bat 'dotnet test SeleniumIde.sln --logger "trx; LogFileName=TestResults.trx"'
+			    bat 'dotnet test SeleniumIde.sln --logger "trx;LogFileName=TestResults.trx"'
 			}
 		}
 	}
 	
 	post{
 	   always{
-	       archiveArtifacts artifacts: '**/TestResults/*.trx',
-		   allowEmptyArchive: true
-		   step([
-		      $class: 'MSTestPublisher',
-			  testResultsFile: '**/TestResults/*.trx'
-		   ])
+	       archiveArtifacts artifacts: '**/TestResults/*.trx', allowEmptyArchive: true
+		   junit '**/TestResults/*.trx'		  
 	   }
 	}
 }
